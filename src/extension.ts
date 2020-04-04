@@ -12,37 +12,37 @@ export function activate(context: vscode.ExtensionContext) {
     updateSettings();
 }
 
-function updateSettings () {
+function updateSettings() {
     const config = vscode.workspace.getConfiguration('theme-timer');
     themeList = config.themes;
     state = config.enable;
-    
-    if(state){
+    if (state) {
         checkTime();
     }
 }
 
-function updateTheme (theme) {
-    console.log('Updating theme', theme.theme);
-    CONFIG.update(THEME, theme.theme, true);
+function updateTheme(theme) {
+    var randomThemeName = theme.theme[Math.floor(Math.random() * theme.theme.length)];
+    console.log('Updating theme', randomThemeName);
+    CONFIG.update(THEME, randomThemeName, true);
     CONFIG = vscode.workspace.getConfiguration();
 }
 
-function checkTime (){
+function checkTime() {
     var format = 'hh:mm:ss';
     var curTime = moment();
 
-    for(var i = 0; i < themeList.length; i++){
+    for (var i = 0; i < themeList.length; i++) {
         var startTime = moment(themeList[i].startTime, format);
         var endTime = moment(themeList[i].endTime, format);
 
-        if(startTime.isAfter(endTime)){
+        if (startTime.isAfter(endTime)) {
             endTime.add(1, 'day');
         }
 
         console.log(startTime, endTime, curTime);
 
-        if(curTime.isBetween(startTime, endTime)){
+        if (curTime.isBetween(startTime, endTime)) {
             updateTheme(themeList[i]);
             scheduleNextCheck(endTime);
             return;
@@ -52,7 +52,7 @@ function checkTime (){
     setTimeout(checkTime, 300000);
 }
 
-function scheduleNextCheck (time) {
+function scheduleNextCheck(time) {
     var curTime = moment();
     time.add(1, 's');
 
